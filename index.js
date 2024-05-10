@@ -1,5 +1,4 @@
-// index.js
-
+// index.js 
 const express = require('express');
 const mongoose = require('mongoose');
 require('dotenv').config();
@@ -27,7 +26,7 @@ mongoose.connect(process.env.MONGODB_URI, {
 const usStatesRouter = require('./routes/states.js');
 app.use('/states', usStatesRouter);
 
-// 404 Error Handler
+// 404 Error Handle
 app.use((req, res) => {
   res.status(404).send('404 Not Found');
 });
