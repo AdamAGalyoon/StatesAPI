@@ -18,7 +18,8 @@
       "landscape_background_url": "https://cdn.civil.services/us-states/backgrounds/1280x720/landscape/alabama.jpg",
       "skyline_background_url": "https://cdn.civil.services/us-states/backgrounds/1280x720/skyline/alabama.jpg",
       "twitter_url": "https://twitter.com/alabamagov",
-      "facebook_url": "https://www.facebook.com/alabamagov"
+      "facebook_url": "https://www.facebook.com/alabamagov",
+      "funfacts": ["The state motto is We Dare to Defend Our Rights", "Known as the yellowhammer state", "Based on Choctaw word albah Amo"]
     },
     {
       "state": "Alaska",
