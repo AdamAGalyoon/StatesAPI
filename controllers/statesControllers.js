@@ -1,16 +1,18 @@
 const State = require('../models/State');
 
-async function getAllStates(req, res) {
+// GET all states
+router.get('/', async (req, res) => {
   try {
     const states = await State.find();
     res.json(states);
   } catch (err) {
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ message: err.message });
   }
-}
+});
 
-async function getStatesByContig(req, res) {
-  const contig = req.query.contig;
+// GET states based on contig parameter
+router.get('/', async (req, res) => {
+  const contig = req.query.contig; // Get the contig query parameter
 
   try {
     let states;
@@ -26,9 +28,10 @@ async function getStatesByContig(req, res) {
     console.error('Error fetching states by contiguity:', err);
     res.status(500).json({ error: 'Internal Server Error' });
   }
-}
+});
 
-async function getStateByCode(req, res) {
+// GET state by code
+router.get('/:state', async (req, res) => {
   const code = req.params.state;
 
   try {
@@ -41,10 +44,11 @@ async function getStateByCode(req, res) {
     console.error('Error fetching state by code:', err);
     res.status(500).json({ error: 'Internal Server Error' });
   }
-}
+});
 
-async function getRandomFunFact(req, res) {
-  const code = req.params.state;
+// GET a random fun fact for the state
+router.get('/:state/funfact', async (req, res) => {
+  const code = req.params.state; 
 
   try {
     const state = await State.findOne({ code });
@@ -53,15 +57,20 @@ async function getRandomFunFact(req, res) {
       return res.status(404).json({ error: 'No fun facts found for the state' });
     }
 
+    // Select a random fun fact from the array of funfacts associated with the state
     const randomFact = state.funfacts[Math.floor(Math.random() * state.funfacts.length)];
+
+    // Send the random fun fact as a JSON response
     res.json({ funfact: randomFact });
   } catch (err) {
+    // Handle any errors that occur during  process
     console.error('Error fetching fun fact:', err);
     res.status(500).json({ error: 'Internal Server Error' });
   }
-}
+});
 
-async function addFunFacts(req, res) {
+// POST to add fun facts to a state
+router.post('/:state/funfact', async (req, res) => {
   const stateCode = req.params.state;
   const { funfacts } = req.body;
 
@@ -71,6 +80,7 @@ async function addFunFacts(req, res) {
       return res.status(404).json({ error: 'State not found' });
     }
 
+    // Add new fun facts to the existing array
     if (Array.isArray(funfacts)) {
       state.funfacts = state.funfacts.concat(funfacts);
     } else {
@@ -83,9 +93,10 @@ async function addFunFacts(req, res) {
     console.error('Error adding fun facts:', err);
     res.status(500).json({ error: 'Internal Server Error' });
   }
-}
+});
 
-async function updateFunFact(req, res) {
+// PATCH to update a fun fact of a state
+router.patch('/:state/funfact', async (req, res) => {
   const stateCode = req.params.state;
   const { index, funfact } = req.body;
 
@@ -96,7 +107,7 @@ async function updateFunFact(req, res) {
     }
 
     if (index && Number.isInteger(index)) {
-      const idx = index - 1;
+      const idx = index - 1; 
       if (idx >= 0 && idx < state.funfacts.length) {
         state.funfacts[idx] = funfact;
         await state.save();
@@ -111,9 +122,10 @@ async function updateFunFact(req, res) {
     console.error('Error updating fun fact:', err);
     res.status(500).json({ error: 'Internal Server Error' });
   }
-}
+});
 
-async function removeFunFact(req, res) {
+// DELETE to remove a fun fact from a state
+router.delete('/:state/funfact', async (req, res) => {
   const stateCode = req.params.state;
   const { index } = req.body;
 
@@ -123,8 +135,9 @@ async function removeFunFact(req, res) {
       return res.status(404).json({ error: 'State not found' });
     }
 
+    
     if (index && Number.isInteger(index)) {
-      const idx = index - 1;
+      const idx = index - 1; 
       if (idx >= 0 && idx < state.funfacts.length) {
         state.funfacts.splice(idx, 1);
         await state.save();
@@ -139,9 +152,11 @@ async function removeFunFact(req, res) {
     console.error('Error removing fun fact:', err);
     res.status(500).json({ error: 'Internal Server Error' });
   }
-}
+});
 
-async function getStateCapital(req, res) {
+
+// GET state capital
+router.get('/:state/capital', async (req, res) => {
   const code = req.params.state;
 
   try {
@@ -149,14 +164,15 @@ async function getStateCapital(req, res) {
     if (!state) {
       return res.status(404).json({ error: 'State not found' });
     }
-    res.json({ state: state.code, capital: state.capital });
+    res.json({ state: state.code, capital: state.capital }); 
   } catch (err) {
     console.error('Error fetching state capital:', err);
     res.status(500).json({ error: 'Internal Server Error' });
   }
-}
+});
 
-async function getStateNickname(req, res) {
+// GET state nickname
+router.get('/:state/nickname', async (req, res) => {
   const code = req.params.state;
 
   try {
@@ -164,14 +180,15 @@ async function getStateNickname(req, res) {
     if (!state) {
       return res.status(404).json({ error: 'State not found' });
     }
-    res.json({ state: state.code, nickname: state.nickname });
+    res.json({ state: state.code, nickname: state.nickname }); 
   } catch (err) {
     console.error('Error fetching state nickname:', err);
     res.status(500).json({ error: 'Internal Server Error' });
   }
-}
+});
 
-async function getStatePopulation(req, res) {
+// GET state population
+router.get('/:state/population', async (req, res) => {
   const code = req.params.state;
 
   try {
@@ -179,14 +196,15 @@ async function getStatePopulation(req, res) {
     if (!state) {
       return res.status(404).json({ error: 'State not found' });
     }
-    res.json({ state: state.code, population: state.population });
+    res.json({ state: state.code, population: state.population }); 
   } catch (err) {
     console.error('Error fetching state population:', err);
     res.status(500).json({ error: 'Internal Server Error' });
   }
-}
+});
 
-async function getStateAdmissionDate(req, res) {
+// GET state admission date
+router.get('/:state/admission', async (req, res) => {
   const code = req.params.state;
 
   try {
@@ -194,12 +212,12 @@ async function getStateAdmissionDate(req, res) {
     if (!state) {
       return res.status(404).json({ error: 'State not found' });
     }
-    res.json({ state: state.code, admitted: state.admissionDate });
+    res.json({ state: state.code, admitted: state.admissionDate }); 
   } catch (err) {
     console.error('Error fetching state admission date:', err);
     res.status(500).json({ error: 'Internal Server Error' });
   }
-}
+});
 
 module.exports = {
   getAllStates,
